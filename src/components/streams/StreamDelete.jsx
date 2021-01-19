@@ -14,12 +14,14 @@ class StreamDelete extends React.Component {
     this.setState({ loading: false });
   }
 
-  render() {
-    const actions = (
+  renderActions() {
+    const { id } = this.props.match.params;
+
+    return (
       <Fragment>
         <button
           className="ui button negative"
-          onClick={() => this.props.deleteStream(this.props.match.params.id)}
+          onClick={() => this.props.deleteStream(id)}
         >
           Delete
         </button>
@@ -28,12 +30,14 @@ class StreamDelete extends React.Component {
         </Link>
       </Fragment>
     );
+  }
 
-    const selectedStream = this.props.stream[this.props.match.params.id];
+  renderContent() {
+    const selectedStream = this.props.stream;
 
-    const content = (
+    return (
       <div>
-        <h2>Are you sure you want to delete the following stream?</h2>
+        <h3>Are you sure you want to delete the following stream?</h3>
         <div>
           <div>
             <h3>Title</h3>
@@ -47,28 +51,27 @@ class StreamDelete extends React.Component {
         </div>
       </div>
     );
+  }
 
+  render() {
     if (this.state.loading) {
       return <div>Loading...</div>;
     } else {
       return (
-        <div>
-          Stream Delete
-          <Modal
-            header="Delete Stream"
-            content={content}
-            onDismiss={() => history.push("/")}
-            actions={actions}
-          />
-        </div>
+        <Modal
+          header="Delete Stream"
+          content={this.renderContent()}
+          onDismiss={() => history.push("/")}
+          actions={this.renderActions()}
+        />
       );
     }
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    stream: state.streams,
+    stream: state.streams[ownProps.match.params.id],
   };
 };
 
